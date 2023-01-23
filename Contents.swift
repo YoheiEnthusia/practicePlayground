@@ -1,59 +1,21 @@
-// ALSの資格を持っているか（CPRを行うことができる）
-protocol AdvancedLifeSupport {
-    func performCPR()
+let array = [1,2,3,4,5,6]
+
+// 関数を使った場合
+func addOne(n1: Int) -> Int {
+    return n1 + 1
 }
+array.map(addOne)
 
-// ①ナースコールを受けて、当直へ引き継ぐ電話番
-class EmergencyCallHandler {
-    // 引き継ぎ先の当直は、ALSの資格がある人だけ
-    var delegate: AdvancedLifeSupport? // delegate == "~に任せる"
-    
-    // 容態を聞く
-    func assessSituation() {
-        print("どうしましたか？")
-    }
-    
-    // 当直にCPRを実行させる
-    func medicalEmergency() {
-        delegate?.performCPR()
-    }
-}
+// クロージャーの省略なし
+array.map({(n1: Int) -> Int in
+    return n1 + 1
+})
 
-// ②当直の救急隊員
-struct Paramedic: AdvancedLifeSupport {
-    init(handler: EmergencyCallHandler) {
-        // 当直を自分に設定する
-        handler.delegate = self
-    }
-    
-    func performCPR() {
-         print("胸圧実施中")
-    }
-}
+// クロージャーの型を省略
+array.map({(n1) in
+    n1 + 1
+})
 
-
-// A:今日の電話番はりかこ。救急隊員は俺。
-let rikako = EmergencyCallHandler()
-let yohei = Paramedic(handler: rikako)
-
-// りかこは容態を聞く
-rikako.assessSituation()
-// りかこは、当直にCPRを任せる
-rikako.medicalEmergency() // 胸圧実施中
- 
-// B:当直を大文字に交代
-class Doctor: AdvancedLifeSupport {
-    init(handler: EmergencyCallHandler) {
-        handler.delegate = self
-    }
-    
-    func performCPR() {
-        print("失敗しないので機械でCPR。")
-    }
-}
-
-let daimonji = Doctor(handler: rikako)
-
-rikako.assessSituation()
-rikako.medicalEmergency() // 失敗しないので機械でCPR。
+// クロージャーの省略完全版。第一引数は$0と書ける
+array.map({ $0 + 1 })
 
